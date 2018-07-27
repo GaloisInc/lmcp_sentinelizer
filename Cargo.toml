@@ -1,0 +1,6 @@
+[package]
+name = "lmcp_sentinelizer"
+version = "0.1.0"
+authors = ["Michal Podhradsky <mpodhradsky@galois.com>"]
+
+[dependencies]
