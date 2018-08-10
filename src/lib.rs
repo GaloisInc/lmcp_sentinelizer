@@ -198,39 +198,6 @@ impl LmcpSentinelizer {
             data.drain(..idx);
             return (None, data);
         }
-
-        /*
-        let mut data = match Self::check_sentinel(data, &Self::BEFORE_PAYLOAD_SIZE) {
-            Ok(bytes) => {
-                // we found +=+=+=+=, cut it from the stream and continue
-                bytes
-            },
-            Err(e) => {
-                println!("no +=+=+=+= in the stream: {}", e);
-                return (vec![],vec![]);
-            }
-        };
-        
-        let len;
-        let mut data;
-        match Self::get_numeric_val(data) {
-            Ok(val,res) => {
-                // we parsed length between the sentinels  +=+=+=+= 123 #@#@#@#@
-                pritnln!("found len = {}", len);
-                len = val;
-                data = res;
-            }
-            Err(e) => {
-                println!("no length between the sentinels  +=+=+=+= 123 #@#@#@#@: {}", e);
-                return (vec![],res);
-            }
-        }
-        
-        if len > data.len() {
-            println!("Len = {}, data.len={}, returing remainig data", len, data.len());
-            return
-        }
-        */
     }
 
     /// Assume that the longest packet has 5 digit length, i.e. 20123 bytes (max is 99999)
@@ -308,7 +275,6 @@ impl LmcpSentinelizer {
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::iter::FromIterator;
 
     const TEST_DATA: &str = "+=+=+=+=25#@#@#@#@ABCDEFGHIJKLMNOPQRSTUVWXY!%!%!%!%1925?^?^?^?^";
     const TEST_PAYLOAD: &str = "ABCDEFGHIJKLMNOPQRSTUVWXY";
@@ -316,7 +282,8 @@ mod test {
     #[test]
     fn test_parse_sentinelized_stream() {
         let (payload, _) =
-            LmcpSentinelizer::parse_sentinelized_stream(TEST_DATA.as_bytes().to_vec()).unwrap();
+            LmcpSentinelizer::parse_stream(TEST_DATA.as_bytes().to_vec());
+        let payload = payload.unwrap();
         assert_eq!(payload, TEST_PAYLOAD.as_bytes().to_vec());
     }
 
@@ -325,7 +292,7 @@ mod test {
         let sentinel = LmcpSentinelizer::create_sentinelized_stream(TEST_PAYLOAD.as_bytes());
         assert_eq!(sentinel, TEST_DATA.as_bytes().to_vec());
     }
-
+/*
     #[test]
     fn test_raw_stream() {
         let mut stream = get_raw_stream();
@@ -2730,4 +2697,5 @@ mod test {
         ];
         v
     }
+    */
 }
